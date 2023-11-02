@@ -9,6 +9,9 @@ const LandingPage = () => {
       <Link to="/record">
         <Button variant="primary">Record</Button>
       </Link>
+      <Link to="/analytics">
+        <Button variant="primary">Analytics</Button>
+      </Link>
     </div>
   );
 };

@@ -9,6 +9,7 @@ const PatientForm = () => {
     name: '',
     age: '',
     visit_instance:1,
+    symptoms:'',
     diagnosis: '',
   });
 
@@ -24,7 +25,7 @@ const PatientForm = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('/api/patients', formData);
+      const response = await axios.post('http://127.0.0.1:5000/api/patient_records', formData);
       console.log('Data submitted:', response.data);
     } catch (error) {
       console.error('Error submitting data:', error);
@@ -61,6 +62,16 @@ const PatientForm = () => {
             type="number"
             name="visit_instance"
             value={formData.visit_instance}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+
+        <Form.Group controlId="symptoms">
+          <Form.Label>Symptoms.</Form.Label>
+          <Form.Control
+            as="textarea"
+            name="symptoms"
+            value={formData.symptoms}
             onChange={handleInputChange}
           />
         </Form.Group>
