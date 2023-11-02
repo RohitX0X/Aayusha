@@ -8,6 +8,7 @@ const PatientForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     age: '',
+    phone:'',
     visit_instance:1,
     symptoms:'',
     diagnosis: '',
@@ -45,7 +46,15 @@ const PatientForm = () => {
             onChange={handleInputChange}
           />
         </Form.Group>
-
+        <Form.Group controlId="phone">
+          <Form.Label>Phone No.</Form.Label>
+          <Form.Control
+            type="number"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
         <Form.Group controlId="age">
           <Form.Label>Age</Form.Label>
           <Form.Control

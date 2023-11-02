@@ -17,6 +17,7 @@ def create_patient():
         symptoms = data.get('symptoms')
         diagnosis = data.get('diagnosis')
         visit_no = data.get('visit_instance')
+        phone = data.get('phone')
         # Create a new patient document in Elasticsearch
         patient_data = {
             'name': name,
@@ -24,11 +25,12 @@ def create_patient():
             'diagnosis': diagnosis,
             'visit_instance': visit_no,
             'symptoms' : symptoms,
+            'phone':phone,
             # Optionally, add more fields as needed
         }
         print(patient_data)
 
-        es.index(index='patient_records',id = age, body=patient_data)
+        es.index(index='patient_records', body=patient_data)
         return jsonify({'message': 'Patient record created successfully'}), 201
 
     except Exception as e:
@@ -53,17 +55,44 @@ def get_all_patients():
 
 @app.route('/api/patient_search', methods=['GET'])
 def search_patients():
-    keyword = request.args.get('keyword', '')  # Get the keyword from the query parameter
+
+    combined_keyword = request.args.get('keyword', '')
+    combined_keyword = combined_keyword.strip()
+
+    print(combined_keyword)
+    length = len(combined_keyword.split())
+    print(length)
+    #keyword = request.args.get('keyword', '')  # Get the keyword from the query parameter
 
     # Define the Elasticsearch query
-    body = {
-        "query": {
-            "match": {
-                "diagnosis": keyword
-            }
+    if(length > 1):
+        body = {
+                "query": {
+                    "bool": {
+                        "should": [
+                            {"match": {"name": combined_keyword}},     
+                            {"match": {"phone": combined_keyword}},      
+                            {"match": {"diagnosis": combined_keyword}}   
+                        ],
+                    "minimum_should_match": 2,
+                    }
+                },
+                "size" : 50
         }
-    }
-
+    else:
+        body = {
+                "query": {
+                    "bool": {
+                        "should": [
+                            {"match": {"name": combined_keyword}},      
+                            {"match": {"phone": combined_keyword}},     
+                            {"match": {"diagnosis": combined_keyword}}   
+                        ],
+                    "minimum_should_match": 1,
+                    }
+                },
+                "size" : 50
+        }
     # Search for patients in Elasticsearch
     result = es.search(index='patient_records', body=body)
 

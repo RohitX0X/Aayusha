@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AnalyticsPage = () => {
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchNamePhone, setSearchNamePhone] = useState('');
 
   const handleSearch = () => {
     // Use Axios to send a GET request to the backend
-    axios.get(`http://127.0.0.1:5000/api/patient_search?keyword=${searchKeyword}`)
+    const combinedKeyword = `${searchKeyword} ${searchNamePhone}`.trim();
+
+    axios.get(`http://127.0.0.1:5000/api/patient_search?keyword=${combinedKeyword}`)
       .then((response) => {
         setSearchResults(response.data);
       })
@@ -25,6 +28,12 @@ const AnalyticsPage = () => {
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
+      <input
+        type="text"
+        placeholder="Search by Name/Phone"
+        value={searchNamePhone}
+        onChange={(e) => setSearchNamePhone(e.target.value)}
+      />
       <button onClick={handleSearch}>Search</button>
 
       {/* Display search results */}
@@ -33,7 +42,7 @@ const AnalyticsPage = () => {
         <ul>
           {searchResults.map((patient) => (
             <li key={patient.name}>
-              {patient.name} - {patient.diagnosis} - {patient.symptoms}
+              {patient.name} - {patient.diagnosis} - {patient.symptoms} - {patient.age} - {patient.phone}
             </li>
           ))}
         </ul>
